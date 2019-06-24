@@ -11,26 +11,26 @@ const jw = require('./service/mapi-service');
  */
 function activate(context) {
 
-	context.subscriptions.push(vscode.commands.registerCommand('jwLink.configure', () => {
-    vscode.window.showInputBox({
-      prompt: 'Enter the API key for the property you would like to configure',
-      placeHolder: 'API key',
-      ignoreFocusOut: true,
-    }).then((key) => {
-      // Prompt for secret and then add both to keychain
-      vscode.window.showInputBox({
-        prompt: `Enter the API secret for ${key}`,
-        placeholder: 'API secret',
-        ignoreFocusOut: true,
-      }).then((secret) => {
-        context.globalState.update('jwApiKey', key);
-        context.globalState.update('jwApiSecret', secret);
-				jw.getPlayers(context);
-      });
-    }).catch((err) => {
-      console.error(err); // eslint-disable-line no-console
-    });
-	}));
+    context.subscriptions.push(vscode.commands.registerCommand('jwLink.configure', () => {
+        vscode.window.showInputBox({
+            prompt: 'Enter the API key for the property you would like to configure',
+            placeHolder: 'API key',
+            ignoreFocusOut: true,
+        }).then((key) => {
+            // Prompt for secret and then add both to keychain
+            vscode.window.showInputBox({
+                prompt: `Enter the API secret for ${key}`,
+                placeholder: 'API secret',
+                ignoreFocusOut: true,
+            }).then((secret) => {
+                context.globalState.update('jwApiKey', key);
+                context.globalState.update('jwApiSecret', secret);
+                jw.getPlayers(context);
+            });
+        }).catch((err) => {
+            console.error(err); // eslint-disable-line no-console
+        });
+    }));
 }
 
 exports.activate = activate;
@@ -39,6 +39,6 @@ exports.activate = activate;
 function deactivate() {}
 
 module.exports = {
-	activate,
-	deactivate
+    activate,
+    deactivate
 }
