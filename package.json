@@ -60,7 +60,6 @@
 	"dependencies": {
 		"axios": "^0.19.0",
 		"fs-extra": "^8.0.1",
-		"jwplayer-api": "^1.5.0",
-		"keytar": "^4.10.0"
+		"jwplayer-api": "^1.5.0"
 	}
 }

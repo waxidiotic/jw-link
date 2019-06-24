@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
-const kt = require('./service/kt-service');
 const jw = require('./service/mapi-service');
 
 // this method is called when your extension is activated
@@ -24,8 +23,9 @@ function activate(context) {
         placeholder: 'API secret',
         ignoreFocusOut: true,
       }).then((secret) => {
-        kt.addCredentials(key, secret);
-        jw.getPlayers(key, secret);
+        context.globalState.update('jwApiKey', key);
+        context.globalState.update('jwApiSecret', secret);
+				jw.getPlayers(context);
       });
     }).catch((err) => {
       console.error(err); // eslint-disable-line no-console
