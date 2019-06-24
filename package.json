@@ -10,37 +10,37 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.configure",
-		"onCommand:extension.refresh",
-		"onCommand:extension.singleLine",
-		"onCommand:extension.player",
-		"onCommand:extension.content"
+		"onCommand:jwLink.configure",
+		"onCommand:jwLink.refresh",
+		"onCommand:jwLink.singleLine",
+		"onCommand:jwLink.player",
+		"onCommand:jwLink.content"
 	],
 	"main": "./extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.configure",
+				"command": "jwLink.configure",
 				"title": "Update API Credentials",
 				"category": "JW Link"
 			},
 			{
-				"command": "extension.refresh",
+				"command": "jwLink.refresh",
 				"title": "Refresh Data",
 				"category": "JW Link"
 			},
 			{
-				"command": "extension.singleLine",
+				"command": "jwLink.singleLine",
 				"title": "Add Single-Line Embed",
 				"category": "JW Link"
 			},
 			{
-				"command": "extension.player",
+				"command": "jwLink.player",
 				"title": "Add Cloud-Hosted Player Library",
 				"category": "JW Link"
 			},
 			{
-				"command": "extension.content",
+				"command": "jwLink.content",
 				"title": "Add Content URL (HLS)",
 				"category": "JW Link"
 			}
