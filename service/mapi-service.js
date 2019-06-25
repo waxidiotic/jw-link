@@ -12,9 +12,11 @@ const getPlayers = (extensionContext) => {
 
     const playersPath = path.join(extensionContext.globalStoragePath, 'players.json');
 
+    // Create folder for extension data
     fs.mkdir(extensionContext.globalStoragePath, err => {
+        // Only throw errors other than if folder already exists
         if (err & err.code !== 'EEXIST') {
-            console.error(err); // eslint-disable-line no-console
+            vscode.window.showErrorMessage('JW Link: Failed to create extension folder');
         }
     });
 
@@ -30,10 +32,9 @@ const getPlayers = (extensionContext) => {
         }).then(res => {
             fs.writeFile(playersPath, JSON.stringify(res.data.players), err => {
                 if (err) {
-                    console.error(err); // eslint-disable-line no-console
-                    return vscode.window.showErrorMessage('Failed to save players');
+                    return vscode.window.showErrorMessage('JW Link: Failed to save players');
                 }
-                vscode.window.showInformationMessage('Saved players');
+                vscode.window.showInformationMessage('JW Link: Saved players');
             })
         });
     } else {

@@ -32,7 +32,7 @@ function activate(context) {
         };
 
         if (key && secret) {
-            vscode.window.showInformationMessage('Your API credentials are already saved.', 'Update Credentials').then(option => {
+            vscode.window.showInformationMessage('JW Link: Your API credentials are already saved.', 'Update Credentials').then(option => {
                 if (option === 'Update Credentials') {
                     promptForCredentials();
                 }
