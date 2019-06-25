@@ -10,14 +10,14 @@ function activate(context) {
     const secret = globalState.get('jwApiSecret');
     let promptForCredentials;
 
-    const registerConfigureCommand = vscode.commands.registerCommand('jwLink.configure', () => {
+    const configure =  () => {
         promptForCredentials = () => {
             vscode.window.showInputBox({
                 prompt: 'Enter the API key for the property you would like to configure',
                 placeHolder: 'API key',
                 ignoreFocusOut: true,
             }).then((key) => {
-                // Prompt for secret and then add both to keychain
+                // Prompt for secret and then add both to global state
                 vscode.window.showInputBox({
                     prompt: `Enter the API secret for ${key}`,
                     placeholder: 'API secret',
@@ -27,12 +27,16 @@ function activate(context) {
                     context.globalState.update('jwApiSecret', secret);
                 });
             }).catch((err) => {
-                console.error(err); // eslint-disable-line no-console
+                vscode.window.showErrorMessage('JW Link: Failed to save credentials', err);
             });
+            vscode.commands.executeCommand('jwLink.refresh');
         };
 
         if (key && secret) {
-            vscode.window.showInformationMessage('JW Link: Your API credentials are already saved.', 'Update Credentials').then(option => {
+            vscode.window.showInformationMessage(
+                'JW Link: Your API credentials are already saved.', // message
+                'Update Credentials' // button
+            ).then(option => {
                 if (option === 'Update Credentials') {
                     promptForCredentials();
                 }
@@ -40,18 +44,18 @@ function activate(context) {
         } else {
             promptForCredentials();
         }
-    });
+    };
 
-    const refreshCommand = vscode.commands.registerCommand('jwLink.refresh', () => {
+    const refresh = () => {
         if (!key && !secret) {
             promptForCredentials();
         }
         jw.getPlayers(context);
         jw.getContent(context);
-    });
+    };
 
-    context.subscriptions.push(registerConfigureCommand);
-    context.subscriptions.push(refreshCommand);
+    vscode.commands.registerCommand('jwLink.configure', () => configure());
+    vscode.commands.registerCommand('jwLink.refresh', () => refresh());
 }
 
 exports.activate = activate;
