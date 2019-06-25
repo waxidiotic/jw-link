@@ -6,9 +6,12 @@ const jw = require('./service/mapi-service');
  */
 function activate(context) {
     const globalState = context.globalState;
+    const key = globalState.get('jwApiKey');
+    const secret = globalState.get('jwApiSecret');
+    let promptForCredentials;
 
     const registerConfigureCommand = vscode.commands.registerCommand('jwLink.configure', () => {
-        const promptForCredentials = () => {
+        promptForCredentials = () => {
             vscode.window.showInputBox({
                 prompt: 'Enter the API key for the property you would like to configure',
                 placeHolder: 'API key',
@@ -22,15 +25,11 @@ function activate(context) {
                 }).then((secret) => {
                     context.globalState.update('jwApiKey', key);
                     context.globalState.update('jwApiSecret', secret);
-                    jw.getPlayers(context);
                 });
             }).catch((err) => {
                 console.error(err); // eslint-disable-line no-console
             });
         };
-
-        const key = globalState.get('jwApiKey');
-        const secret = globalState.get('jwApiSecret');
 
         if (key && secret) {
             vscode.window.showInformationMessage('Your API credentials are already saved.', 'Update Credentials').then(option => {
@@ -43,7 +42,15 @@ function activate(context) {
         }
     });
 
+    const refreshCommand = vscode.commands.registerCommand('jwLink.refresh', () => {
+        if (!key && !secret) {
+            promptForCredentials();
+        }
+        jw.getPlayers(context);
+    });
+
     context.subscriptions.push(registerConfigureCommand);
+    context.subscriptions.push(refreshCommand);
 }
 
 exports.activate = activate;
