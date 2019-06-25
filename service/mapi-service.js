@@ -4,6 +4,8 @@ const jwApi = require('jwplayer-api');
 const fs = require('fs');
 const path = require('path');
 
+let jwApiInstance;
+
 const getPlayers = (extensionContext) => {
     const credentials = {
         key: extensionContext.globalState.get('jwApiKey'),
@@ -21,7 +23,7 @@ const getPlayers = (extensionContext) => {
     });
 
     if (credentials.key && credentials.secret) {
-        const jwApiInstance = new jwApi({
+        jwApiInstance = new jwApi({
             key: credentials.key,
             secret: credentials.secret
         });
@@ -39,8 +41,48 @@ const getPlayers = (extensionContext) => {
         });
     } else {
     // error
+    // TODO: Prompt user and ask if they want to save credentials
     }
-
 };
 
-exports.getPlayers = getPlayers;
+const getContent = (extensionContext) => {
+    const credentials = {
+        key: extensionContext.globalState.get('jwApiKey'),
+        secret: extensionContext.globalState.get('jwApiSecret')
+    };
+
+    const contentPath = path.join(extensionContext.globalStoragePath, 'content.json');
+
+    // Create folder for extension data
+    fs.mkdir(extensionContext.globalStoragePath, err => {
+        // Only throw errors other than if folder already exists
+        if (err & err.code !== 'EEXIST') {
+            vscode.window.showErrorMessage('JW Link: Failed to create extension folder');
+        }
+    });
+
+    if (credentials.key && credentials.secret) {
+        if (!jwApiInstance) {
+            jwApiInstance = new jwApi({
+                key: credentials.key,
+                secret: credentials.secret
+            });
+        }
+
+        jwApiInstance.videosList().then(res => {
+            fs.writeFile(contentPath, JSON.stringify(res.videos), err => {
+                if (err) {
+                    return vscode.window.showErrorMessage('JW Link: Failed to save list of content');
+                }
+                vscode.window.showInformationMessage('JW Link: Saved list of content');
+            });
+        });
+    } else {
+        // TODO: Prompt user and ask if they want to save credentials
+    }
+};
+
+module.exports = {
+    getPlayers,
+    getContent
+};

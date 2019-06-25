@@ -47,6 +47,7 @@ function activate(context) {
             promptForCredentials();
         }
         jw.getPlayers(context);
+        jw.getContent(context);
     });
 
     context.subscriptions.push(registerConfigureCommand);
