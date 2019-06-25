@@ -10,8 +10,7 @@ const jw = require('./service/mapi-service');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-    context.subscriptions.push(vscode.commands.registerCommand('jwLink.configure', () => {
+    const registerConfigureCommand = vscode.commands.registerCommand('jwLink.configure', () => {
         vscode.window.showInputBox({
             prompt: 'Enter the API key for the property you would like to configure',
             placeHolder: 'API key',
@@ -30,7 +29,9 @@ function activate(context) {
         }).catch((err) => {
             console.error(err); // eslint-disable-line no-console
         });
-    }));
+    });
+
+    context.subscriptions.push(registerConfigureCommand);
 }
 
 exports.activate = activate;
