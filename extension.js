@@ -1,5 +1,6 @@
 const vscode = require('vscode');
 const jw = require('./service/mapi-service');
+const views = require('./views');
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -56,6 +57,8 @@ function activate(context) {
 
     vscode.commands.registerCommand('jwLink.configure', () => configure());
     vscode.commands.registerCommand('jwLink.refresh', () => refresh());
+    vscode.commands.registerCommand('jwLink.showPlayers', () => views.displayPlayers(context));
+    vscode.commands.registerCommand('jwLink.showContent', () => views.displayContent(context));
 }
 
 exports.activate = activate;
