@@ -8,10 +8,11 @@ function displayPlayers(extensionContext) {
     players.forEach(player => {
         playersArray.push({
             label: player.name,
-            description: `Version: ${player.version} | ID: ${player.key}`
+            description: `Version: ${player.version} | ID: ${player.key}`,
+            pid: player.key
         })
     });
-    vscode.window.showQuickPick(playersArray);
+    return vscode.window.showQuickPick(playersArray);
 }
 
 function displayContent(extensionContext) {
@@ -21,10 +22,11 @@ function displayContent(extensionContext) {
     content.forEach(video => {
         contentArray.push({
             label: video.title,
-            description: `ID: ${video.key}`
+            description: `ID: ${video.key}`,
+            mediaid: video.key
         });
     });
-    vscode.window.showQuickPick(contentArray);
+    return vscode.window.showQuickPick(contentArray);
 }
 
 module.exports = {

@@ -55,10 +55,29 @@ function activate(context) {
         jw.getContent(context);
     };
 
+    const generateSingleLineEmbed = () => {
+        views.displayPlayers(context).then(playerChoice => {
+            views.displayContent(context).then(contentChoice => {
+                insertText(`https://cdn.jwplayer.com/players/${playerChoice.pid}-${contentChoice.mediaid}.js`);
+            });
+        });
+    };
+
+    const insertText = (text) => {
+        const editor = vscode.window.activeTextEditor;
+
+        if (editor) {
+            editor.edit(edit => {
+                edit.insert(vscode.window.activeTextEditor.selection.active, text);
+            })
+        }
+    };
+
     vscode.commands.registerCommand('jwLink.configure', () => configure());
     vscode.commands.registerCommand('jwLink.refresh', () => refresh());
     vscode.commands.registerCommand('jwLink.showPlayers', () => views.displayPlayers(context));
     vscode.commands.registerCommand('jwLink.showContent', () => views.displayContent(context));
+    vscode.commands.registerCommand('jwLink.singleLine', () => generateSingleLineEmbed());
 }
 
 exports.activate = activate;
