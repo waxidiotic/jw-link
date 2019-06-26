@@ -2,16 +2,23 @@ const vscode = require('vscode');
 const jw = require('./service/mapi-service');
 const views = require('./views');
 
+// Constants
+const JW_ROOT = `https://cdn.jwplayer.com`;
+const JW_SINGLELINE_URI = `players`;
+const JW_CLOUDHOSTED_URI = `libraries`;
+const JW_MANIFEST_URI = `manifests`;
+
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-    const globalState = context.globalState;
-    const key = globalState.get('jwApiKey');
-    const secret = globalState.get('jwApiSecret');
+    let savedKey;
+    let savedSecret;
     let promptForCredentials;
 
     const configure =  () => {
+        savedKey = context.globalState.get('jwApiKey');
+        savedSecret = context.globalState.get('jwApiSecret');
         promptForCredentials = () => {
             vscode.window.showInputBox({
                 prompt: 'Enter the API key for the property you would like to configure',
@@ -24,16 +31,29 @@ function activate(context) {
                     placeholder: 'API secret',
                     ignoreFocusOut: true,
                 }).then((secret) => {
-                    context.globalState.update('jwApiKey', key);
-                    context.globalState.update('jwApiSecret', secret);
+                    if (!key || !secret) {
+                        return vscode.window.showErrorMessage('JW Link: Failed to save credentials');
+                    }
+                    if (validateCredentialsLength(key, secret)) {
+                        context.globalState.update('jwApiKey', key);
+                        context.globalState.update('jwApiSecret', secret);
+                        savedKey = key;
+                        savedSecret = secret;
+                        vscode.commands.executeCommand('jwLink.refresh');
+                    } else {
+                        vscode.window.showErrorMessage('JW Link: Credentials are invalid', 'Try Again').then(option => {
+                            if (option === 'Try Again') {
+                                vscode.commands.executeCommand('jwLink.configure');
+                            }
+                        });
+                    }
                 });
             }).catch((err) => {
                 vscode.window.showErrorMessage('JW Link: Failed to save credentials', err);
             });
-            vscode.commands.executeCommand('jwLink.refresh');
         };
 
-        if (key && secret) {
+        if (savedKey && savedSecret) {
             vscode.window.showInformationMessage(
                 'JW Link: Your API credentials are already saved.', // message
                 'Update Credentials' // button
@@ -48,7 +68,7 @@ function activate(context) {
     };
 
     const refresh = () => {
-        if (!key && !secret) {
+        if (!savedKey && !savedSecret) {
             promptForCredentials();
         }
         jw.getPlayers(context);
@@ -58,8 +78,20 @@ function activate(context) {
     const generateSingleLineEmbed = () => {
         views.displayPlayers(context).then(playerChoice => {
             views.displayContent(context).then(contentChoice => {
-                insertText(`https://cdn.jwplayer.com/players/${playerChoice.pid}-${contentChoice.mediaid}.js`);
+                insertText(`${JW_ROOT}/${JW_SINGLELINE_URI}/${contentChoice.mediaid}-${playerChoice.pid}.js`);
             });
+        });
+    };
+
+    const generateCloudHostedPlayerURI = () => {
+        views.displayPlayers(context).then(playerChoice => {
+            insertText(`${JW_ROOT}/${JW_CLOUDHOSTED_URI}/${playerChoice.pid}.js`);
+        })
+    };
+
+    const generateHlsManifestURI = () => {
+        views.displayContent(context).then(contentChoice => {
+            insertText(`${JW_ROOT}/${JW_MANIFEST_URI}/${contentChoice.mediaid}.m3u8`);
         });
     };
 
@@ -68,16 +100,21 @@ function activate(context) {
 
         if (editor) {
             editor.edit(edit => {
-                edit.insert(vscode.window.activeTextEditor.selection.active, text);
+                edit.insert(editor.selection.active, text);
             })
         }
     };
 
-    vscode.commands.registerCommand('jwLink.configure', () => configure());
-    vscode.commands.registerCommand('jwLink.refresh', () => refresh());
-    vscode.commands.registerCommand('jwLink.showPlayers', () => views.displayPlayers(context));
-    vscode.commands.registerCommand('jwLink.showContent', () => views.displayContent(context));
-    vscode.commands.registerCommand('jwLink.singleLine', () => generateSingleLineEmbed());
+    const validateCredentialsLength = (key, secret) => {
+        return key.length === 8 && secret.length === 24;
+    };
+
+    vscode.commands.registerCommand('jwLink.configure', configure);
+    vscode.commands.registerCommand('jwLink.refresh', refresh);
+    vscode.commands.registerCommand('jwLink.singleLine', generateSingleLineEmbed);
+    vscode.commands.registerCommand('jwLink.player', generateCloudHostedPlayerURI);
+    vscode.commands.registerCommand('jwLink.content', generateHlsManifestURI);
+    vscode.commands.registerCommand('jwLink.moreOptions', () => { views.moreOptions(context) });
 }
 
 exports.activate = activate;

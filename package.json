@@ -15,8 +15,7 @@
 		"onCommand:jwLink.singleLine",
 		"onCommand:jwLink.player",
 		"onCommand:jwLink.content",
-		"onCommand:jwLink.showPlayers",
-		"onCommand:jwLink.showContent"
+		"onCommand:jwLink.moreOptions"
 	],
 	"main": "./extension.js",
 	"contributes": {
@@ -47,13 +46,8 @@
 				"category": "JW Link"
 			},
 			{
-				"command": "jwLink.showPlayers",
-				"title": "Show List of Players",
-				"category": "JW Link"
-			},
-			{
-				"command": "jwLink.showContent",
-				"title": "Show List of Content",
+				"command": "jwLink.moreOptions",
+				"title": "More Options...",
 				"category": "JW Link"
 			}
 		]

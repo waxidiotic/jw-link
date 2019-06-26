@@ -4,6 +4,8 @@ const jwApi = require('jwplayer-api');
 const fs = require('fs');
 const path = require('path');
 
+const JW_PLAYERS_ENDPOINT = `v1/players/list`;
+
 let jwApiInstance;
 
 const getPlayers = (extensionContext) => {
@@ -30,7 +32,7 @@ const getPlayers = (extensionContext) => {
 
         return axios({
             method: 'get',
-            url: jwApiInstance.generateUrl('v1/players/list')
+            url: jwApiInstance.generateUrl(JW_PLAYERS_ENDPOINT)
         }).then(res => {
             fs.writeFile(playersPath, JSON.stringify(res.data.players), err => {
                 if (err) {
@@ -40,8 +42,12 @@ const getPlayers = (extensionContext) => {
             })
         });
     } else {
-    // error
-    // TODO: Prompt user and ask if they want to save credentials
+        // If no credentials found, prompt user with option to add credentials
+        vscode.window.showErrorMessage('JW Link: Credentials not found', 'Add Credentials').then(option => {
+            if (option === 'Add Credentials') {
+                vscode.commands.executeCommand('jwLink.configure');
+            }
+        });
     }
 };
 
@@ -78,7 +84,12 @@ const getContent = (extensionContext) => {
             });
         });
     } else {
-        // TODO: Prompt user and ask if they want to save credentials
+        // If no credentials found, prompt user with option to add credentials
+        vscode.window.showErrorMessage('JW Link: Credentials not found', 'Add Credentials').then(option => {
+            if (option === 'Add Credentials') {
+                vscode.commands.executeCommand('jwLink.configure');
+            }
+        });
     }
 };
 
