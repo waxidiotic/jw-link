@@ -40,7 +40,7 @@
 			},
 			{
 				"command": "jwLink.refresh",
-				"title": "Refresh Data",
+				"title": "Refresh Content and Players",
 				"category": "JW Link"
 			},
 			{
