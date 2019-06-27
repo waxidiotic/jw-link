@@ -2,13 +2,26 @@
 	"name": "jw-link",
 	"displayName": "JW Link",
 	"description": "Interface with hosted players and content via JW Player Management API",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.35.0"
 	},
 	"categories": [
 		"Other"
 	],
+	"icon": "jwplayer-mark.png",
+	"author": {
+		"name": "Alex Bussey",
+		"email": "abussey@jwplayer.com"
+	},
+	"publisher": "waxidiotic",
+	"bugs": {
+		"url": "https://github.com/waxidiotic/jw-link/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/waxidiotic/jw-link.git"
+	},
 	"activationEvents": [
 		"onCommand:jwLink.configure",
 		"onCommand:jwLink.refresh",
