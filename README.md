@@ -2,15 +2,11 @@
 
 Interface with hosted players and content via JW Player Management API. For use with [Visual Studio Code](https://code.visualstudio.com).
 
----
-
 ## Uses
 
 - Embedding JW Platform-hosted players and content via a single-line embed
 - Generating a URL for a cloud-hosted player library
 - Generating a URL for JW Platform-hosted content's HLS manifest
-
----
 
 ## Commands
 
@@ -26,8 +22,6 @@ Interface with hosted players and content via JW Player Management API. For use 
 
 - **Add Content URL (HLS)** - Displays a choice of the content hosted on your JW Platform account. Once chosen, the content's HLS manifest URL will be inserted in your document at the cursor's placement.
   - Example: `https://cdn.jwplayer.com/manifests/MEDIAID.m3u8`
-
----
 
 ## Other Useful JW Player Developer Resources
 
